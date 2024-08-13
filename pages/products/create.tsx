@@ -1,6 +1,7 @@
 import { useState } from 'react'
-import axios from 'axios'
 import { useRouter } from 'next/router'
+import styles from '../../styles/CreateProduct.module.css'
+import { createProduct } from '@/services/api'
 
 type FormData = {
   name: string
@@ -34,8 +35,21 @@ const CreateProductPage = () => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     setError(null)
+
+    // Basic validation
+    if (
+      !formData.name ||
+      !formData.price ||
+      !formData.imageUrl ||
+      !formData.category ||
+      !formData.stock
+    ) {
+      setError('Please fill in all fields.')
+      return
+    }
+
     try {
-      await axios.post('/api/products', formData)
+      await createProduct(formData)
       router.push('/')
     } catch (error) {
       setError('Error creating product. Please try again.')
@@ -44,11 +58,11 @@ const CreateProductPage = () => {
   }
 
   return (
-    <div style={styles.container}>
-      <h1 style={styles.heading}>Create Product</h1>
-      {error && <p style={styles.error}>{error}</p>}
-      <form onSubmit={handleSubmit} style={styles.form}>
-        <label htmlFor='name' style={styles.label}>
+    <div className={styles.container}>
+      <h1 className={styles.heading}>Create Product</h1>
+      {error && <p className={styles.error}>{error}</p>}
+      <form onSubmit={handleSubmit} className={styles.form}>
+        <label htmlFor='name' className={styles.label}>
           Name
         </label>
         <input
@@ -59,9 +73,9 @@ const CreateProductPage = () => {
           value={formData.name}
           onChange={handleChange}
           required
-          style={styles.input}
+          className={styles.input}
         />
-        <label htmlFor='description' style={styles.label}>
+        <label htmlFor='description' className={styles.label}>
           Description
         </label>
         <input
@@ -72,9 +86,9 @@ const CreateProductPage = () => {
           value={formData.description}
           onChange={handleChange}
           required
-          style={styles.input}
+          className={styles.input}
         />
-        <label htmlFor='price' style={styles.label}>
+        <label htmlFor='price' className={styles.label}>
           Price
         </label>
         <input
@@ -85,9 +99,9 @@ const CreateProductPage = () => {
           value={formData.price}
           onChange={handleChange}
           required
-          style={styles.input}
+          className={styles.input}
         />
-        <label htmlFor='imageUrl' style={styles.label}>
+        <label htmlFor='imageUrl' className={styles.label}>
           Image URL
         </label>
         <input
@@ -98,9 +112,9 @@ const CreateProductPage = () => {
           value={formData.imageUrl}
           onChange={handleChange}
           required
-          style={styles.input}
+          className={styles.input}
         />
-        <label htmlFor='category' style={styles.label}>
+        <label htmlFor='category' className={styles.label}>
           Category
         </label>
         <input
@@ -111,9 +125,9 @@ const CreateProductPage = () => {
           value={formData.category}
           onChange={handleChange}
           required
-          style={styles.input}
+          className={styles.input}
         />
-        <label htmlFor='stock' style={styles.label}>
+        <label htmlFor='stock' className={styles.label}>
           Stock
         </label>
         <input
@@ -124,60 +138,14 @@ const CreateProductPage = () => {
           value={formData.stock}
           onChange={handleChange}
           required
-          style={styles.input}
+          className={styles.input}
         />
-        <button type='submit' style={styles.button}>
+        <button type='submit' className={styles.button}>
           Create Product
         </button>
       </form>
     </div>
   )
-}
-
-const styles = {
-  container: {
-    maxWidth: '500px',
-    margin: '50px auto',
-    padding: '20px',
-    backgroundColor: '#f9f9f9',
-    borderRadius: '8px',
-    boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)'
-  },
-  heading: {
-    textAlign: 'center' as const,
-    marginBottom: '20px',
-    color: '#333'
-  },
-  error: {
-    color: 'red',
-    textAlign: 'center' as const,
-    marginBottom: '20px'
-  },
-  form: {
-    display: 'flex',
-    flexDirection: 'column' as const,
-    gap: '15px'
-  },
-  label: {
-    fontWeight: 'bold' as const,
-    color: '#555'
-  },
-  input: {
-    padding: '10px',
-    borderRadius: '4px',
-    border: '1px solid #ccc',
-    fontSize: '16px'
-  },
-  button: {
-    padding: '10px 15px',
-    borderRadius: '4px',
-    border: 'none',
-    backgroundColor: '#0070f3',
-    color: 'white',
-    fontWeight: 'bold' as const,
-    cursor: 'pointer',
-    transition: 'background-color 0.3s ease'
-  }
 }
 
 export default CreateProductPage

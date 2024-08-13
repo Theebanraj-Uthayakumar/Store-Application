@@ -13,6 +13,8 @@ export default async function handler(
 
   await connectMongoDB()
 
+  console.log(method);
+
   switch (method) {
     case 'GET':
       try {

@@ -1,8 +1,9 @@
-// pages/products/[id].tsx
 import { GetServerSideProps } from 'next'
-import axios from 'axios'
 import Head from 'next/head'
 import Link from 'next/link'
+import { deleteProduct, fetchProductByID } from '@/services/api'
+import styles from '../../../styles/ProductPage.module.css'
+import { useRouter } from 'next/router'
 
 type Product = {
   _id: string
@@ -19,40 +20,59 @@ type ProductProps = {
 }
 
 export default function ProductPage({ product }: ProductProps) {
+  const router = useRouter()
+
+  const handleDelete = async () => {
+    try {
+      await deleteProduct(product._id)
+      router.push('/')
+    } catch (error) {
+      console.error('Error deleting product:', error)
+    }
+  }
+
   return (
-    <div style={styles.container}>
+    <div className={styles.container}>
       <Head>
         <title>{product.name}</title>
       </Head>
-      <div style={styles.gridContainer}>
-        <div style={styles.imageContainer}>
+      <div className={styles.gridContainer}>
+        <div className={styles.imageContainer}>
           <img
             src={product.imageUrl}
             alt={product.name}
-            style={styles.productImage}
+            className={styles.productImage}
           />
         </div>
-        <div style={styles.contentContainer}>
-          <h1 style={styles.productName}>{product.name}</h1>
-          <p style={styles.productDescription}>{product.description}</p>
-          <div style={styles.details}>
-            <p style={styles.detailItem}>
+        <div className={styles.contentContainer}>
+          <h1 className={styles.productName}>{product.name}</h1>
+          <p className={styles.productDescription}>{product.description}</p>
+          <div className={styles.details}>
+            <p className={styles.detailItem}>
               Category:{' '}
-              <span style={styles.detailValue}>{product.category}</span>
+              <span className={styles.detailValue}>{product.category}</span>
             </p>
-            <p style={styles.detailItem}>
+            <p className={styles.detailItem}>
               Price:{' '}
-              <span style={styles.detailValue}>
+              <span className={styles.detailValue}>
                 ${product.price.toFixed(2)}
               </span>
             </p>
-            <p style={styles.detailItem}>
-              Stock: <span style={styles.detailValue}>{product.stock}</span>
+            <p className={styles.detailItem}>
+              Stock: <span className={styles.detailValue}>{product.stock}</span>
             </p>
           </div>
-          <Link href={`/products/${product._id}/edit`}>
-            <span style={styles.editButton}>Edit Product</span>
-          </Link>
+          <div className={styles.buttonContainer}>
+            <Link
+              href={`/products/${product._id}/edit`}
+              className={styles.editButton}
+            >
+              Edit Product
+            </Link>
+            <button onClick={handleDelete} className={styles.deleteButton}>
+              Delete Product
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -63,10 +83,10 @@ export const getServerSideProps: GetServerSideProps = async context => {
   const { id } = context.params as { id: string }
 
   try {
-    const { data } = await axios.get(`http://localhost:3001/api/products/${id}`)
+    const product = await fetchProductByID(id)
     return {
       props: {
-        product: data.data
+        product: product.data
       }
     }
   } catch (error) {
@@ -74,77 +94,5 @@ export const getServerSideProps: GetServerSideProps = async context => {
     return {
       notFound: true
     }
-  }
-}
-
-const styles = {
-  container: {
-    maxWidth: '1200px',
-    margin: '60px auto',
-    padding: '20px',
-    backgroundColor: '#ffffff',
-    borderRadius: '12px',
-    boxShadow: '0 6px 12px rgba(0, 0, 0, 0.1)',
-    fontFamily: 'Arial, sans-serif'
-  },
-  gridContainer: {
-    display: 'grid',
-    gridTemplateColumns: '1fr 2fr',
-    gap: '20px',
-    alignItems: 'start'
-  },
-  imageContainer: {
-    borderRadius: '12px',
-    overflow: 'hidden',
-    boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)'
-  },
-  productImage: {
-    width: '100%',
-    height: 'auto',
-    objectFit: 'cover' as const
-  },
-  contentContainer: {
-    display: 'flex',
-    flexDirection: 'column' as const,
-    justifyContent: 'center'
-  },
-  productName: {
-    fontSize: '32px',
-    fontWeight: '600' as const,
-    color: '#333',
-    margin: '0 0 10px'
-  },
-  productDescription: {
-    fontSize: '18px',
-    color: '#555',
-    marginBottom: '20px',
-    lineHeight: '1.6'
-  },
-  details: {
-    fontSize: '18px',
-    color: '#333'
-  },
-  detailItem: {
-    marginBottom: '10px'
-  },
-  detailValue: {
-    fontWeight: '600' as const,
-    color: '#0070f3'
-  },
-  editButton: {
-    marginTop: '20px',
-    padding: '10px 20px',
-    fontSize: '16px',
-    color: '#fff',
-    backgroundColor: '#0070f3',
-    border: 'none',
-    borderRadius: '8px',
-    textDecoration: 'none',
-    textAlign: 'center' as const,
-    display: 'inline-block',
-    transition: 'background-color 0.3s ease'
-  },
-  editButtonHover: {
-    backgroundColor: '#005bb5'
   }
 }

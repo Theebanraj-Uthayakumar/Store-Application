@@ -7,10 +7,11 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  // Ensure the database connection is established
   await connectMongoDB()
   
   const { method } = req
+
+  console.log(method);
 
   try {
     switch (method) {

@@ -1,9 +1,9 @@
-// pages/products/[id]/edit.tsx
 import { GetServerSideProps } from 'next'
 import { useState } from 'react'
-import axios from 'axios'
 import { useRouter } from 'next/router'
 import Head from 'next/head'
+import { deleteProduct, fetchProductByID, updateProduct } from '@/services/api'
+import styles from '../../../styles/EditPage.module.css'
 
 type EditProductProps = {
   product: {
@@ -41,7 +41,7 @@ export default function EditProductPage({ product }: EditProductProps) {
     e.preventDefault()
     setError(null)
     try {
-      await axios.put(`/api/products/${product._id}`, formData)
+      await updateProduct(product._id, formData)
       router.push('/')
     } catch (error) {
       setError('Error updating product. Please try again.')
@@ -50,14 +50,14 @@ export default function EditProductPage({ product }: EditProductProps) {
   }
 
   return (
-    <div style={styles.container}>
+    <div className={styles.container}>
       <Head>
         <title>Edit {product.name}</title>
       </Head>
-      <h1 style={styles.title}>Edit Product</h1>
-      {error && <p style={styles.error}>{error}</p>}
-      <form onSubmit={handleSubmit} style={styles.form}>
-        <label htmlFor='name' style={styles.label}>
+      <h1 className={styles.title}>Edit Product</h1>
+      {error && <p className={styles.error}>{error}</p>}
+      <form onSubmit={handleSubmit} className={styles.form}>
+        <label htmlFor='name' className={styles.label}>
           Name
         </label>
         <input
@@ -68,9 +68,9 @@ export default function EditProductPage({ product }: EditProductProps) {
           value={formData.name}
           onChange={handleChange}
           required
-          style={styles.input}
+          className={styles.input}
         />
-        <label htmlFor='description' style={styles.label}>
+        <label htmlFor='description' className={styles.label}>
           Description
         </label>
         <input
@@ -81,9 +81,9 @@ export default function EditProductPage({ product }: EditProductProps) {
           value={formData.description}
           onChange={handleChange}
           required
-          style={styles.input}
+          className={styles.input}
         />
-        <label htmlFor='price' style={styles.label}>
+        <label htmlFor='price' className={styles.label}>
           Price
         </label>
         <input
@@ -94,9 +94,9 @@ export default function EditProductPage({ product }: EditProductProps) {
           value={formData.price}
           onChange={handleChange}
           required
-          style={styles.input}
+          className={styles.input}
         />
-        <label htmlFor='imageUrl' style={styles.label}>
+        <label htmlFor='imageUrl' className={styles.label}>
           Image URL
         </label>
         <input
@@ -107,9 +107,9 @@ export default function EditProductPage({ product }: EditProductProps) {
           value={formData.imageUrl}
           onChange={handleChange}
           required
-          style={styles.input}
+          className={styles.input}
         />
-        <label htmlFor='category' style={styles.label}>
+        <label htmlFor='category' className={styles.label}>
           Category
         </label>
         <input
@@ -120,9 +120,9 @@ export default function EditProductPage({ product }: EditProductProps) {
           value={formData.category}
           onChange={handleChange}
           required
-          style={styles.input}
+          className={styles.input}
         />
-        <label htmlFor='stock' style={styles.label}>
+        <label htmlFor='stock' className={styles.label}>
           Stock
         </label>
         <input
@@ -133,9 +133,9 @@ export default function EditProductPage({ product }: EditProductProps) {
           value={formData.stock}
           onChange={handleChange}
           required
-          style={styles.input}
+          className={styles.input}
         />
-        <button type='submit' style={styles.submitButton}>
+        <button type='submit' className={styles.submitButton}>
           Update Product
         </button>
       </form>
@@ -146,10 +146,10 @@ export default function EditProductPage({ product }: EditProductProps) {
 export const getServerSideProps: GetServerSideProps = async context => {
   const { id } = context.params as { id: string }
   try {
-    const { data } = await axios.get(`http://localhost:3001/api/products/${id}`)
+    const product = await fetchProductByID(id)
     return {
       props: {
-        product: data.data
+        product: product.data
       }
     }
   } catch (error) {
@@ -157,61 +157,5 @@ export const getServerSideProps: GetServerSideProps = async context => {
     return {
       notFound: true
     }
-  }
-}
-
-const styles = {
-  container: {
-    maxWidth: '800px',
-    margin: '60px auto',
-    padding: '20px',
-    backgroundColor: '#ffffff',
-    borderRadius: '12px',
-    boxShadow: '0 6px 12px rgba(0, 0, 0, 0.1)',
-    fontFamily: 'Arial, sans-serif'
-  },
-  title: {
-    fontSize: '28px',
-    fontWeight: '600' as const,
-    color: '#333',
-    marginBottom: '20px',
-    textAlign: 'center' as const
-  },
-  error: {
-    color: 'red',
-    textAlign: 'center' as const,
-    marginBottom: '20px'
-  },
-  form: {
-    display: 'flex',
-    flexDirection: 'column' as const,
-    gap: '15px'
-  },
-  label: {
-    fontSize: '16px',
-    fontWeight: '500' as const,
-    color: '#333'
-  },
-  input: {
-    padding: '10px',
-    fontSize: '16px',
-    borderRadius: '8px',
-    border: '1px solid #ddd',
-    boxSizing: 'border-box' as const,
-    width: '100%'
-  },
-  submitButton: {
-    padding: '12px 20px',
-    fontSize: '16px',
-    color: '#fff',
-    backgroundColor: '#0070f3',
-    border: 'none',
-    borderRadius: '8px',
-    cursor: 'pointer' as const,
-    transition: 'background-color 0.3s ease',
-    alignSelf: 'center' as const
-  },
-  submitButtonHover: {
-    backgroundColor: '#005bb5'
   }
 }
