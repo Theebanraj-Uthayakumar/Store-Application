@@ -3,6 +3,7 @@ import { GetServerSideProps } from 'next'
 import { useState } from 'react'
 import axios from 'axios'
 import { useRouter } from 'next/router'
+import Head from 'next/head'
 
 type EditProductProps = {
   product: {
@@ -49,14 +50,16 @@ export default function EditProductPage({ product }: EditProductProps) {
   }
 
   return (
-    <div>
-      <head>
+    <div style={styles.container}>
+      <Head>
         <title>Edit {product.name}</title>
-      </head>
-      <h1>Edit Product</h1>
-      {error && <p style={{ color: 'red' }}>{error}</p>}
-      <form onSubmit={handleSubmit}>
-        <label htmlFor='name'>Name</label>
+      </Head>
+      <h1 style={styles.title}>Edit Product</h1>
+      {error && <p style={styles.error}>{error}</p>}
+      <form onSubmit={handleSubmit} style={styles.form}>
+        <label htmlFor='name' style={styles.label}>
+          Name
+        </label>
         <input
           type='text'
           id='name'
@@ -65,8 +68,11 @@ export default function EditProductPage({ product }: EditProductProps) {
           value={formData.name}
           onChange={handleChange}
           required
+          style={styles.input}
         />
-        <label htmlFor='description'>Description</label>
+        <label htmlFor='description' style={styles.label}>
+          Description
+        </label>
         <input
           type='text'
           id='description'
@@ -75,8 +81,11 @@ export default function EditProductPage({ product }: EditProductProps) {
           value={formData.description}
           onChange={handleChange}
           required
+          style={styles.input}
         />
-        <label htmlFor='price'>Price</label>
+        <label htmlFor='price' style={styles.label}>
+          Price
+        </label>
         <input
           type='number'
           id='price'
@@ -85,8 +94,11 @@ export default function EditProductPage({ product }: EditProductProps) {
           value={formData.price}
           onChange={handleChange}
           required
+          style={styles.input}
         />
-        <label htmlFor='imageUrl'>Image URL</label>
+        <label htmlFor='imageUrl' style={styles.label}>
+          Image URL
+        </label>
         <input
           type='text'
           id='imageUrl'
@@ -95,8 +107,11 @@ export default function EditProductPage({ product }: EditProductProps) {
           value={formData.imageUrl}
           onChange={handleChange}
           required
+          style={styles.input}
         />
-        <label htmlFor='category'>Category</label>
+        <label htmlFor='category' style={styles.label}>
+          Category
+        </label>
         <input
           type='text'
           id='category'
@@ -105,8 +120,11 @@ export default function EditProductPage({ product }: EditProductProps) {
           value={formData.category}
           onChange={handleChange}
           required
+          style={styles.input}
         />
-        <label htmlFor='stock'>Stock</label>
+        <label htmlFor='stock' style={styles.label}>
+          Stock
+        </label>
         <input
           type='number'
           id='stock'
@@ -115,8 +133,11 @@ export default function EditProductPage({ product }: EditProductProps) {
           value={formData.stock}
           onChange={handleChange}
           required
+          style={styles.input}
         />
-        <button type='submit'>Update Product</button>
+        <button type='submit' style={styles.submitButton}>
+          Update Product
+        </button>
       </form>
     </div>
   )
@@ -136,5 +157,61 @@ export const getServerSideProps: GetServerSideProps = async context => {
     return {
       notFound: true
     }
+  }
+}
+
+const styles = {
+  container: {
+    maxWidth: '800px',
+    margin: '60px auto',
+    padding: '20px',
+    backgroundColor: '#ffffff',
+    borderRadius: '12px',
+    boxShadow: '0 6px 12px rgba(0, 0, 0, 0.1)',
+    fontFamily: 'Arial, sans-serif'
+  },
+  title: {
+    fontSize: '28px',
+    fontWeight: '600' as const,
+    color: '#333',
+    marginBottom: '20px',
+    textAlign: 'center' as const
+  },
+  error: {
+    color: 'red',
+    textAlign: 'center' as const,
+    marginBottom: '20px'
+  },
+  form: {
+    display: 'flex',
+    flexDirection: 'column' as const,
+    gap: '15px'
+  },
+  label: {
+    fontSize: '16px',
+    fontWeight: '500' as const,
+    color: '#333'
+  },
+  input: {
+    padding: '10px',
+    fontSize: '16px',
+    borderRadius: '8px',
+    border: '1px solid #ddd',
+    boxSizing: 'border-box' as const,
+    width: '100%'
+  },
+  submitButton: {
+    padding: '12px 20px',
+    fontSize: '16px',
+    color: '#fff',
+    backgroundColor: '#0070f3',
+    border: 'none',
+    borderRadius: '8px',
+    cursor: 'pointer' as const,
+    transition: 'background-color 0.3s ease',
+    alignSelf: 'center' as const
+  },
+  submitButtonHover: {
+    backgroundColor: '#005bb5'
   }
 }
