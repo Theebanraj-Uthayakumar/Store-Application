@@ -27,6 +27,7 @@ export default function Home({ products }: HomeProps) {
             href={`/products/${product._id}/${product.name}`}
             key={product._id}
             passHref
+            style={{textDecoration: 'none'}}
           >
             <div className={styles.productCard}>
               <img

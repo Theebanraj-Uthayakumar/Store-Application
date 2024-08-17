@@ -11,8 +11,6 @@ export default async function handler(
   
   const { method } = req
 
-  console.log(method);
-
   try {
     switch (method) {
       case 'GET':
